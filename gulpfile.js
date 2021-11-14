@@ -16,7 +16,7 @@ let path = {
   src: {
     html: [source_folder + "/*.html", "!" + source_folder + "/_*.html"],
     css: source_folder + "/scss/style.scss",
-    js: source_folder + "/js/script.js",
+    js: source_folder + "/js/main.js",
     img: source_folder + "/img/**/*.{jpg,png,svg,gif,ico,webp}",
     fonts: source_folder + "/fonts/*.ttf",
   },
@@ -47,7 +47,8 @@ let { src, dest, } = require('gulp'),
   svgSprite =  require('gulp-svg-sprite'),
   ttf2woff =  require('gulp-ttf2woff'),
   ttf2woff2 =  require('gulp-ttf2woff2'),
-  fonter = require('gulp-fonter');
+  fonter = require('gulp-fonter'),
+  concat = require('gulp-concat');
 
 
 function browserSync(params) {
@@ -95,8 +96,16 @@ function css() {
 }
 
 function js() {
-  return src(path.src.js)
-    .pipe(fileinclude())
+  return src([
+    'node_modules/jquery/dist/jquery.js',
+    'node_modules/slick-carousel/slick/slick.js',
+    'node_modules/@fancyapps/fancybox/dist/jquery.fancybox.js',
+    'node_modules/rateyo/src/jquery.rateyo.js',
+    path.src.js,
+    ])
+    .pipe(concat('main.js'))
+
+    // .pipe(fileinclude())
     .pipe(dest(path.build.js))
     .pipe(
       uglify()
